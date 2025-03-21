@@ -125,9 +125,11 @@ def create_database_agent():
     Always use the tools to interact with the database, don't rely on your internal memory.
 
     Always infer the best key to use when creating new data, use camel case. First, list the keys to see if the key is available before inferring.
+    
+    Load up all the values from the database before talking to the user
 
     Your First goal is to ensure the following keys have valid values retrieved from the user {INITIAL_DATABASE_FIELDS}
-    Keep prompting the user for these values until they are all filled. If the answers are already filled, this goal is complete. If the goal is already complete, do not tell the user you have collected all the information you need
+    Keep prompting the user for these values until they are all filled. If the answers are already filled, this goal is complete. If the goal is already complete, do not tell the user you have collected their information already
 
     Your second goal, is to help the user with their relationship problems. This can be done through constructive conversation, or giving advice to the user to help their relationship
         Examples of good advice
@@ -157,7 +159,6 @@ def create_database_agent():
 
 def invoke(agent_executor, utterance: str) -> str:
     """Invoke the database agent with a user utterance."""
-    print(f"> {utterance}")
     thread_id = "db_agent_123"
     response = agent_executor.invoke(
         {"messages": [HumanMessage(content=utterance)]},
@@ -176,9 +177,9 @@ def chat():
     while True:
         if "q" == utterance.casefold():
             break
-        response = invoke(agent_executor, utterance)
+        response = invoke(agent_executor, utterance).strip()
         print("bot: " + response)
-        utterance = input(response).strip()
+        utterance = input().strip()
 
     print("Goodbye")
 
